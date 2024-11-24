@@ -1,4 +1,6 @@
-#!/opt/tools/bsc/latest/bin/bluetcl
+#!/usr/bin/env bluetcl
+# search in PATH for bluetcl, then use that to interpret this script
+
 package require Bluesim
 #Bluesim::sim load mkTestbench_bsim.so mkTestbench
 # ./mkTestbench_bsim.so -f script.sh

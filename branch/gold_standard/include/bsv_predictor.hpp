@@ -173,6 +173,9 @@ void bsv_predictor::initiate_bsim(){
 
     execve(run, args, env);
     perror("Error running script");
+    fprintf(stderr, "Script: %s\n", run);
+    fprintf(stderr, "Args: %s\n", *args);
+    fprintf(stderr, "Error code: %d (%s)\n", errno, strerror(errno));
     exit(EXIT_FAILURE);
   }
 }

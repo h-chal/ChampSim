@@ -24,8 +24,9 @@ VSIM ?= cvc
 TOPFILE   ?= $(BSV_SRC)/testbench.bsv
 TOPMODULE ?= mkTestbench
 
-
-PL = /opt/tools/bsc/latest/lib/Libraries/
+# use `which` to find bsc path, deal with it being a symlink, and go up the file tree twice
+BSC_DIR = $(shell which bsc | xargs realpath | xargs dirname | xargs dirname)
+PL = $(BSC_DIR)/lib/Libraries/
 BSC_COMP_FLAGS = -elab -keep-fires -aggressive-conditions -no-warn-action-shadowing
 INCLUDE = $(TOPDIR)/include
 BSC_LINK_FLAGS = -keep-fires
