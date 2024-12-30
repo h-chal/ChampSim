@@ -32,7 +32,7 @@ all_execs: $(filter-out $(test_main_name), $(executable_name))
 endif
 
 make_gold_standard: 	
-	make -C ./branch/gold_standard PREDICTOR=$(gold_standard_testing_predictor_directory) DEBUG_ON=$(gold_standard_testing_debug_on) MODEL_OFF=$(gold_standard_without_model);\
+	make -C ./branch/gold_standard PREDICTOR=$(gold_standard_testing_predictor_directory) MODEL_OFF=$(gold_standard_without_model);\
 
 # Remove all intermediate files
 clean:

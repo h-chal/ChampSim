@@ -1,6 +1,3 @@
-#ifndef BIMODAL_PREDICTOR_HPP
-#define BIMODAL_PREDICTOR_HPP
-
 #include "../../../include/gold_standard.hpp"
 #include <unistd.h>
 
@@ -25,22 +22,11 @@ namespace gold_standard {
         table[index] = entry;
     }
 
-    #ifdef DEBUG_DATA
-        std::pair<uint8_t,DebugData> gold_standard_predictor::impl_predict_branch(uint64_t ip){
-            uint16_t index = (ip >> 2) & 0xFFF;
-            uint8_t entry = table[index];
-            DebugData debug{index, entry, 0};
-            return {entry > 1, debug};    
-        }
-    #else
-        uint8_t gold_standard_predictor::impl_predict_branch(uint64_t ip){
-            uint16_t index = (ip >> 2) & 0xFFF;
-            uint8_t entry = table[index];
-            
-            return entry > 1;    
-        }
-    #endif
+    uint8_t gold_standard_predictor::impl_predict_branch(uint64_t ip){
+        uint16_t index = (ip >> 2) & 0xFFF;
+        uint8_t entry = table[index];
+        
+        return entry > 1;    
+    }
 
 };
-
-#endif

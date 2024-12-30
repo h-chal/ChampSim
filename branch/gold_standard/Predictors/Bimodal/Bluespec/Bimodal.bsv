@@ -26,51 +26,22 @@ module mkBimodal(DirPredictor#(BimodalTrainInfo));
 
     Vector#(SupSize, DirPred#(BimodalTrainInfo)) predIfc;
     Reg#(Bit#(1)) dummy <- mkReg(0);
-
-    `ifdef DEBUG_DATA
     for(Integer i=0; i < valueOf(SupSize); i=i+1) begin
         predIfc[i] = (interface DirPred;
-            method ActionValue#(DirPredResultWithDebugData#(BimodalTrainInfo)) pred;
+            method ActionValue#(DirPredResult#(BimodalTrainInfo)) pred;
                 PCIndex index = truncate(offsetPc(currentPc,i) >> 2);
                 Entry entry = bimodal_table.sub(index);
 
-                return DirPredResultWithDebugData {
-                    debugData: DebugData {
-                        history: Invalid,
-                        entryNumber: Valid({0,(unpack(index))}),
-                        entryValues: Valid({0,(unpack(entry))})
-                    },
-                    predResult: DirPredResult {
-                        taken: unpack(truncateLSB(entry)),
-                        train: BimodalTrainInfo {
-                            counter: entry,
-                            pc: index
-                        }
+                return DirPredResult {
+                    taken: unpack(truncateLSB(entry)),
+                    train: BimodalTrainInfo {
+                        counter: entry,
+                        pc: index
                     }
                 };
             endmethod
         endinterface);
     end
-    `else
-        for(Integer i=0; i < valueOf(SupSize); i=i+1) begin
-            predIfc[i] = (interface DirPred;
-                method ActionValue#(DirPredResult#(BimodalTrainInfo)) pred;
-                    PCIndex index = truncate(offsetPc(currentPc,i) >> 2);
-                    Entry entry = bimodal_table.sub(index);
-                    //$display("pc: %d bsv index: %d counter: %d\n", currentPc, index, entry);
-
-                    return DirPredResult {
-                        taken: unpack(truncateLSB(entry)),
-                        train: BimodalTrainInfo {
-                            counter: entry,
-                            pc: index
-                        }
-                    };
-                endmethod
-            endinterface);
-        end
-    `endif
-
     
     interface pred = predIfc;
 

@@ -19,12 +19,7 @@
 #include "ooo_cpu.h"
 #include "tracereader.h"
 
-
-#ifdef DEBUG_DATA
-#define RESP_SIZE PRED_RESP_WITH_DEBUG
-#else
 #define RESP_SIZE PRED_RESP
-#endif
 
 class bsv_predictor final : public predictor_concept{
     private:
@@ -42,8 +37,6 @@ class bsv_predictor final : public predictor_concept{
       uint8_t read_prediction_response(uint64_t ip);
 
     public:
-
-      DebugData last_debug_entry;
       bsv_predictor() : last_prediction{}, count(0), total_prefetched(0) {}
       void initialise();
       void last_branch_result(uint64_t ip, uint64_t target, uint8_t taken, uint8_t branch_type);
@@ -86,11 +79,6 @@ uint8_t bsv_predictor::read_prediction_response(uint64_t ip){
   
   if(read(resp_pipe[0], std::data(buff), RESP_SIZE) > 0){
         memcpy(&recieved_ip, std::data(buff)+1, 8);
-        #ifdef DEBUG_DATA
-          memcpy(&last_debug_entry .entryNumber, std::data(buff)+PRED_RESP, 8);
-          memcpy(&last_debug_entry .entryValues, std::data(buff)+PRED_RESP+8, 8);
-          memcpy(&last_debug_entry .global_history, std::data(buff)+PRED_RESP+16, 16);
-        #endif
 
         if(recieved_ip == ip){
           out = buff[0] - '0';

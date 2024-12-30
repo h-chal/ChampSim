@@ -11,7 +11,6 @@ package require Bluesim
 
 
 Bluesim::sim load branch/gold_standard/Build/mkTestbench_bsim.so mkTestbench
-#Bluesim::sim arg "DEBUG"
 
 
 #Bluesim::sim arg "OUT=$outfd"

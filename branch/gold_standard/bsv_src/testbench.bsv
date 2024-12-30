@@ -2,13 +2,9 @@ import StmtFSM::*;
 import BrPred::*;
 import Predictor::*;
 
-// This is not very extensible at all, also might be better to just have a big blob be sent over
-import "BDPI" function Action branch_pred_resp_with_debug(Bit#(8) taken, Address ip, Bit#(64) entryNumber, Bit#(64) entryValues, Bit#(128) history);
-
 import "BDPI" function Action branch_pred_resp(Bit#(8) taken, Address ip);
 import "BDPI" function ActionValue#(Bit#(160)) recieve();
 import "BDPI" function Action set_file_descriptors;
-import "BDPI" function Action debug;
 
 typedef UInt#(64) Address;
 
@@ -30,24 +26,12 @@ module mkTestbench(Empty);
 
     Reg#(Bit#(8)) prediction <- mkReg(0);
     Reg#(Message) message <- mkReg(?);
-    Reg#(Bool) debug <- mkReg(?);
     let predictor <- mkDirPredictor;
     
     Reg#(DirPredResult#(DirPredTrainInfo)) pendingTrainInfo <- mkReg(DirPredResult{taken: False, train: ?});
-    Reg#(DebugData) debugData <- mkReg(?);
-      
-    function Action test(DebugData d);
-      $display("%d \n",fromMaybe(0,d.entryNumber));
-    endfunction
     
     function Action predict(Address ip);
-      `ifdef DEBUG_DATA
-        //DirPredResultWithDebugData result = predictor.pred[0].pred;
-        //test(result.debugData);
-        action let a <- predictor.pred[0].pred; pendingTrainInfo <= a.predResult; debugData <= a.debugData; endaction
-      `else
-        action let a <- predictor.pred[0].pred; pendingTrainInfo <= a; endaction
-      `endif
+      action let a <- predictor.pred[0].pred; pendingTrainInfo <= a; endaction
     endfunction
 
     function Action update(BranchUpdateInfo updateInfo);
@@ -76,14 +60,6 @@ module mkTestbench(Empty);
       return ret;
     endfunction
 
-    function Action debugUpdate(BranchUpdateInfo b);
-      $display("BSV Update IP: %d, target : %d, taken: %d, Type %d:", b.ip, b.target, b.taken, b.branch_type);
-    endfunction
-
-    function Action debugPredictionReq(Address ip);
-      $display("BSV Predict IP: %d", ip);
-    endfunction
-
     function Bool isPred(Message m);
       Bool x = False;
       case(m) matches
@@ -92,34 +68,22 @@ module mkTestbench(Empty);
       return x;
     endfunction
 
-    //Reg#(BranchUpdateInfo) update <- mkReg(?);
-
 
     Stmt stmt = seq 
-        set_file_descriptors;
-        action let a <- $test$plusargs("DEBUG"); debug <= a; endaction
-            while(True) seq
-              action let a <- recieve; message <= convertToMessage(a); endaction
-              if (isPred(message)) seq
-                predictor.nextPc(pack(message.PredictReq));
-                predict(message.PredictReq);
-                if(debug) debugPredictionReq(message.PredictReq);
-                `ifdef DEBUG_DATA
-                  branch_pred_resp_with_debug({7'b0000000,pack(pendingTrainInfo.taken)}, message.PredictReq, fromMaybe(0,debugData.entryNumber), fromMaybe(0,debugData.entryValues), fromMaybe(0, debugData.history));
-                `else
-                  branch_pred_resp({7'b0000000,pack(pendingTrainInfo.taken)}, message.PredictReq);
-                `endif
-              endseq
-              if (!isPred(message)) seq
-                update(message.UpdateReq);
-                if(debug) debugUpdate(message.UpdateReq);
-              endseq
-            endseq
-            /*while(True) seq
-              action let a <- branch_update_req; update <= a; endaction  
-              debugUpdate(convertUpdate(update));
-            endseq*/
-        //my_display(b);
+      set_file_descriptors;
+        while(True) seq
+          action let a <- recieve; message <= convertToMessage(a); endaction
+          if (isPred(message)) seq
+            $display("bsv predict %d", message.PredictReq);
+            predictor.nextPc(pack(message.PredictReq));
+            predict(message.PredictReq);
+            branch_pred_resp({7'b0000000,pack(pendingTrainInfo.taken)}, message.PredictReq);
+          endseq
+          if (!isPred(message)) seq
+            $display("bsv update %d", message.UpdateReq.ip);
+            update(message.UpdateReq);
+          endseq
+        endseq
     endseq;
 
     
