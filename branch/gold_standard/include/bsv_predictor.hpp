@@ -12,7 +12,6 @@
 #include <cassert>
 #include <cstring>
 #include <queue>
-#include "gold_standard.hpp"
 #include "types.h"
 
 
@@ -20,6 +19,34 @@
 #include "tracereader.h"
 
 #define RESP_SIZE PRED_RESP
+
+#ifndef SCRIPT_LOCATION
+#define SCRIPT_LOCATION "./branch/gold_standard/script.sh"
+#endif
+
+#ifndef DEBUG_PRINTS
+#define DEBUG_PRINTS 1
+#endif
+
+#define debug_printf(fmt, ...) \
+  do { if(DEBUG_PRINTS) { \
+    printf(fmt, __VA_ARGS__); \
+    }}\
+  while(0);
+
+#define assert_message(expr, fmt, ...) \
+  if(!(expr)) {\
+    printf(fmt, __VA_ARGS__); \
+    assert(expr); \
+  }
+
+class predictor_concept {
+  public:  
+      virtual ~predictor_concept() = default;
+      virtual void initialise() = 0;
+      virtual void last_branch_result(uint64_t ip, uint64_t target, uint8_t taken, uint8_t branch_type) = 0;
+      virtual uint8_t predict_branch(uint64_t ip) = 0; 
+};
 
 class bsv_predictor final : public predictor_concept{
     private:
@@ -118,7 +145,7 @@ uint8_t bsv_predictor::predict_branch(uint64_t ip){
 
 void bsv_predictor::last_branch_result(uint64_t ip, uint64_t branch_target, uint8_t taken, uint8_t branch_type){
   if(branch_type == BRANCH_CONDITIONAL){
-      debug_printf("Update %ld, branch targed: %ld, taken: %d, branch type: %d, count: %ld, last_recieved: %ld \n", ip, branch_target, taken, branch_type, count, last_recieved);
+      debug_printf("Update %ld, branch target: %ld, taken: %d, branch type: %d, count: %ld, last_recieved: %ld \n", ip, branch_target, taken, branch_type, count, last_recieved);
       assert(last_recieved == ip);
    }
     //write_update(ip, branch_target, taken, branch_type);
