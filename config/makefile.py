@@ -55,10 +55,6 @@ def make_part(src_dirs, dest_dir, build_id, bsv_predictor_testing={}):
                     continue
                 else:
                     yield assign_variable('bsv_predictor_testing_predictor_directory', bsv_predictor_testing['predictor'])
-                    if 'debug' in bsv_predictor_testing.keys() and bsv_predictor_testing['debug']:
-                        yield assign_variable('bsv_predictor_testing_debug_on', '1')
-                    if 'no_model' in bsv_predictor_testing.keys() and bsv_predictor_testing['no_model']:
-                        yield assign_variable('bsv_predictor_without_model', '1')
 
         local_dir_varname = '{}_dirs_{}'.format(build_id, i)
         local_obj_varname = '{}_objs_{}'.format(build_id, i)

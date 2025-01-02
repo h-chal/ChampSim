@@ -1,8 +1,6 @@
 {
     "bsv_predictor": {
-        "predictor": "Bimodal",
-        "debug": true,
-        "no_model": false
+        "predictor": "Bimodal"
     },
     "num_cores": 1
 }
