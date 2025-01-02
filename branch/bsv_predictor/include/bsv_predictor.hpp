@@ -58,7 +58,7 @@ class bsv_predictor final : public predictor_concept{
       // Debug
       u_int64_t count;
       uint64_t total_prefetched;
-      uint64_t last_recieved;
+      uint64_t last_received;
 
       void initiate_bsim();
       uint8_t read_prediction_response(uint64_t ip);
@@ -102,21 +102,21 @@ void write_update(uint64_t ip, uint64_t branch_target, uint8_t taken, uint8_t br
 uint8_t bsv_predictor::read_prediction_response(uint64_t ip){
   std::array<char, RESP_SIZE> buff;
   uint8_t out = 0;
-  uint64_t recieved_ip;
+  uint64_t received_ip;
   
   if(read(resp_pipe[0], std::data(buff), RESP_SIZE) > 0){
-        memcpy(&recieved_ip, std::data(buff)+1, 8);
+        memcpy(&received_ip, std::data(buff)+1, 8);
 
-        if(recieved_ip == ip){
+        if(received_ip == ip){
           out = buff[0] - '0';
-          count++; last_recieved = ip;
-          debug_printf("Prediction Done %ld\n", recieved_ip);
+          count++; last_received = ip;
+          debug_printf("Prediction Done %ld\n", received_ip);
         }
         else{
-          last_prediction = {recieved_ip, buff[0]-'0'};
+          last_prediction = {received_ip, buff[0]-'0'};
         }
   }else{
-      perror("Recieving prediction");
+      perror("Receiving prediction");
   }
   return out;
 }
@@ -128,9 +128,9 @@ uint8_t bsv_predictor::predict_branch(uint64_t ip){
    if(last_prediction){
     if((*last_prediction).first == ip){
       out = (*last_prediction).second;
-      debug_printf("Prediction Recieved %ld, %d\n", ip, out);
+      debug_printf("Prediction Received %ld, %d\n", ip, out);
       last_prediction.reset();
-      count++; last_recieved = ip;
+      count++; last_received = ip;
     }
    }else{
     debug_printf("total prefetch: %ld, since prefetch: %ld\n", total_prefetched, count);
@@ -145,8 +145,8 @@ uint8_t bsv_predictor::predict_branch(uint64_t ip){
 
 void bsv_predictor::last_branch_result(uint64_t ip, uint64_t branch_target, uint8_t taken, uint8_t branch_type){
   if(branch_type == BRANCH_CONDITIONAL){
-      debug_printf("Update %ld, branch target: %ld, taken: %d, branch type: %d, count: %ld, last_recieved: %ld \n", ip, branch_target, taken, branch_type, count, last_recieved);
-      assert(last_recieved == ip);
+      debug_printf("Update %ld, branch target: %ld, taken: %d, branch type: %d, count: %ld, last_received: %ld \n", ip, branch_target, taken, branch_type, count, last_received);
+      assert(last_received == ip);
    }
     //write_update(ip, branch_target, taken, branch_type);
   return;

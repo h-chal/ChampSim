@@ -3,7 +3,7 @@ import BrPred::*;
 import Predictor::*;
 
 import "BDPI" function Action branch_pred_resp(Bit#(8) taken, Address ip);
-import "BDPI" function ActionValue#(Bit#(160)) recieve();
+import "BDPI" function ActionValue#(Bit#(160)) receive();
 import "BDPI" function Action set_file_descriptors;
 
 typedef UInt#(64) Address;
@@ -72,7 +72,7 @@ module mkTestbench(Empty);
     Stmt stmt = seq 
       set_file_descriptors;
         while(True) seq
-          action let a <- recieve; message <= convertToMessage(a); endaction
+          action let a <- receive; message <= convertToMessage(a); endaction
           if (isPred(message)) seq
             $display("bsv predict %d", message.PredictReq);
             predictor.nextPc(pack(message.PredictReq));

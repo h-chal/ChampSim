@@ -62,7 +62,7 @@ void branch_update_req(unsigned int* res, unsigned char* buff){
 }
 
 // 2 bits
-void recieve(unsigned int* res){
+void receive(unsigned int* res){
   unsigned char buff[MSG_LENGTH];
   int num = 0;
   //printf("About to read from %d\n", pipe_read);
@@ -72,15 +72,15 @@ void recieve(unsigned int* res){
   //printf("Done reading\n");
   if(num > 0){
     if(buff[0] == PREDICT_REQ){
-      //printf("Recieving Pred\n");
+      //printf("Receiving Pred\n");
       res[0] = PREDICT_REQ;  
       branch_pred_req(res, &buff[1]);
     }else if(buff[0] == UPDATE_REQ){
-      //printf("Recieving Update\n");
+      //printf("Receiving Update\n");
       res[0] = UPDATE_REQ;
       branch_update_req(res, &buff[1]);
     }else{
-      fprintf(stderr, "Recieving invalid data");
+      fprintf(stderr, "Receiving invalid data");
     }
   }else{
     perror("Error reading data\n");

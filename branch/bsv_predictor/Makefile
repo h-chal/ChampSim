@@ -39,7 +39,7 @@ DIR_PREDICTOR_INTERFACE_LOCATION ?= $(BSV_INCLUDE)/Predictor.bsv
 TOP_FRAMEWORK_FILE ?= $(TOPDIR)/bsv_predictor.cc
 
 BSIM_DIRS = -simdir $(SIM_DIR) -bdir $(SIM_DIR) -info-dir $(SIM_DIR)
-CFILE = $(BSV_SRC)/reciever.c
+BSV_INTERFACE = $(BSV_SRC)/bsv_interface.c
 BSIM_EXE = $(BUILD_DIR)/$(TOPMODULE)_bsim
 
 .PHONY: failure_check
@@ -64,7 +64,7 @@ compile: build_bsim
 link:
 	@echo Linking for Bluesim ...
 	bsc  -I $(INCLUDE) -e $(TOPMODULE) -sim -o $(BSIM_EXE) $(BSIM_DIRS) $(BSC_LINK_FLAGS) $(BSC_PATHS) \
-		$(CFILE)
+		$(BSV_INTERFACE)
 	@echo Linking for Bluesim finished
 
 .PHONY: set_bsv_predictor
