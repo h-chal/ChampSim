@@ -20,8 +20,8 @@
 
 #define RESP_SIZE PRED_RESP
 
-#ifndef SCRIPT_LOCATION
-#define SCRIPT_LOCATION "./branch/bsv_predictor/script.sh"
+#ifndef RUN_BLUESIM_SCRIPT
+#define RUN_BLUESIM_SCRIPT "./branch/bsv_predictor/run_bluesim.sh"
 #endif
 
 #ifndef DEBUG_PRINTS
@@ -165,6 +165,10 @@ void bsv_predictor::initialise(){
   champsim::enable_ahead_predictions(req_pipe[1], send, &total_prefetched);
 }
 
+/*
+Fork this process and communicate via pipes.
+One process remains in this C++ code and the other is in Bluesim (called via a script).
+*/
 void bsv_predictor::initiate_bsim(){
   pid_t pid;
   if(pipe(req_pipe) < 0) exit(1);
@@ -177,7 +181,7 @@ void bsv_predictor::initiate_bsim(){
   }
 
   if(pid == 0){
-    char run[] = SCRIPT_LOCATION;
+    char run[] = RUN_BLUESIM_SCRIPT;
     char* args[] = {run, NULL};
     char pred_in_arg[20], pred_out_arg[20];
 
