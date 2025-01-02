@@ -36,7 +36,7 @@ TOP_BSV_PREDICTOR_FILE ?= $(TOPDIR)/$(PRED_DIR)/$(PREDICTOR)/Bluespec/$(PREDICTO
 DIR_PREDICTOR_INTERFACE_LOCATION ?= $(BSV_INCLUDE)/Predictor.bsv
 
 
-TOP_FRAMEWORK_FILE ?= $(TOPDIR)/gold_standard.cc
+TOP_FRAMEWORK_FILE ?= $(TOPDIR)/bsv_predictor.cc
 
 BSIM_DIRS = -simdir $(SIM_DIR) -bdir $(SIM_DIR) -info-dir $(SIM_DIR)
 CFILE = $(BSV_SRC)/reciever.c

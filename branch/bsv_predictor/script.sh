@@ -10,7 +10,7 @@ package require Bluesim
 #set outfd [lindex $argv 1]
 
 
-Bluesim::sim load branch/gold_standard/Build/mkTestbench_bsim.so mkTestbench
+Bluesim::sim load branch/bsv_predictor/Build/mkTestbench_bsim.so mkTestbench
 
 
 #Bluesim::sim arg "OUT=$outfd"

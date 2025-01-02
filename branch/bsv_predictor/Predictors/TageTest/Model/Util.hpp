@@ -1,4 +1,4 @@
-#include "../../../include/gold_standard.hpp"
+#include "../../../include/bsv_predictor.hpp"
 #include "../../../include/Components/lfsr.hpp"
 #include <memory>
 #include <iostream>
@@ -6,7 +6,7 @@
 #include <utility>
 #include <algorithm>
 
-namespace gold_standard {
+namespace bsv_predictor {
 
     #define GLOBAL_SIZE 256
     #define PATH_HISTORY_SIZE 16

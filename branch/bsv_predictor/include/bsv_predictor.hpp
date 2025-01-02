@@ -21,7 +21,7 @@
 #define RESP_SIZE PRED_RESP
 
 #ifndef SCRIPT_LOCATION
-#define SCRIPT_LOCATION "./branch/gold_standard/script.sh"
+#define SCRIPT_LOCATION "./branch/bsv_predictor/script.sh"
 #endif
 
 #ifndef DEBUG_PRINTS

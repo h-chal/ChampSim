@@ -2,6 +2,11 @@
 #include "include/bsv_predictor.hpp"
 #include "ooo_cpu.h"
 
+/*
+This file represents/interfaces with a branch direction predictor implemented in Bluespec (BSV).
+During compilation the chosen implementation will be included (via Makefile).
+*/
+
 namespace {
   bsv_predictor bluespec_predictor;
 }

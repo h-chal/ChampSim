@@ -1,7 +1,7 @@
 #ifndef TAGE_HPP
 #define TAGE_HPP
 
-#include "../../../include/gold_standard.hpp"
+#include "../../../include/bsv_predictor.hpp"
 #include "../../../include/Components/lfsr.hpp"
 #include "Util.hpp"
 
@@ -22,7 +22,7 @@ branches in the branch history ghist (by inserting a taken bit) and to also use 
 */
 
 
-namespace gold_standard {
+namespace bsv_predictor {
     // Default values of 0
     
     #define U_COUNTER_SIZE 2
@@ -66,7 +66,7 @@ namespace gold_standard {
     constexpr table_parameters t6{9,11,76};
     constexpr table_parameters t7{9,12,130};
 
-    void gold_standard_predictor::impl_initialise(){
+    void bsv_predictor_predictor::impl_initialise(){
 
         tagged_tables.push_back(std::make_unique<tagged_table<t1>>());
         tagged_tables.push_back(std::make_unique<tagged_table<t2>>());
@@ -87,7 +87,7 @@ namespace gold_standard {
         std::cout << "Initialized\n";
     }
 
-    uint8_t gold_standard_predictor::impl_predict_branch(uint64_t ip){
+    uint8_t bsv_predictor_predictor::impl_predict_branch(uint64_t ip){
         
         bool found_provider = false;
         bool found_alt = false;
@@ -154,7 +154,7 @@ namespace gold_standard {
     }
 
     // Luckily updates are immediately after the predictions
-    void gold_standard_predictor::impl_last_branch_result(uint64_t ip, uint64_t target, uint8_t taken, uint8_t branch_type){        
+    void bsv_predictor_predictor::impl_last_branch_result(uint64_t ip, uint64_t target, uint8_t taken, uint8_t branch_type){        
         bool branch_taken = taken > 0;
         // ********* Bimodal update
         std::pair<uint32_t, uint32_t> bimodal_index = get_bimodal_index(ip);
