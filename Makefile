@@ -21,7 +21,7 @@ all: all_execs
 #  - $(build_objs), the list of all object files corresponding to core sources
 #  - $(module_dirs), the list of all directories that hold module object files
 #  - $(module_objs), the list of all object files corresponding to modules
-#  - bsv_predictor_testing_predictor_directory If the gold standard testing framework is being used
+#  - bsv_predictor_testing_predictor_directory if the Bluespec SystemVerilog branch framework is being used
 #  - All dependencies and flags assigned according to the modules
 include _configuration.mk
 
@@ -32,7 +32,7 @@ all_execs: $(filter-out $(test_main_name), $(executable_name))
 endif
 
 make_bsv_predictor: 	
-	make -C ./branch/bsv_predictor PREDICTOR=$(bsv_predictor_testing_predictor_directory);\
+	$(MAKE) -C ./branch/bsv_predictor PREDICTOR=$(bsv_predictor_testing_predictor_directory);\
 
 # Remove all intermediate files
 clean:
@@ -42,6 +42,7 @@ clean:
 	@-$(RM) inc/ooo_cpu_modules.h
 	@-$(RM) src/core_inst.cc
 	@-$(RM) $(test_main_name)
+	@$(MAKE) -C ./branch/bsv_predictor full_clean
 
 # Remove all configuration files
 configclean: clean

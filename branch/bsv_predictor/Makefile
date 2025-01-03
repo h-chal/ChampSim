@@ -93,9 +93,11 @@ default:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)/*
+	-rm $(BSV_SRC)/bsv_interface.o
 
 .PHONY: full_clean
 full_clean:
+	$(MAKE) clean
 	rm -r -f  $(BUILD_DIR)
 
 
