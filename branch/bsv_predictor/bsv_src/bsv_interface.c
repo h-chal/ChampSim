@@ -27,7 +27,6 @@ __uint64_t to_long(const unsigned char* charArray){
   return result;
 }
 
-// Whether it is in debug mode or not
 void set_file_descriptors(){
   const char* fd_in = getenv(ENV_FIFO_IN);
   const char* fd_out = getenv(ENV_FIFO_OUT);
@@ -63,21 +62,25 @@ void branch_update_req(unsigned int* res, unsigned char* buff){
 }
 
 // 2 bits
-void recieve(unsigned int* res){
-  
+void receive(unsigned int* res){
   unsigned char buff[MSG_LENGTH];
   int num = 0;
-  if((num = read(pipe_read, buff, MSG_LENGTH)) > 0){
+  //printf("About to read from %d\n", pipe_read);
+  // If requests aren't serviced then more requests aren't made.
+  // E.g. forgetting to call branch_pred_resp :(
+  num = read(pipe_read, buff, MSG_LENGTH);
+  //printf("Done reading\n");
+  if(num > 0){
     if(buff[0] == PREDICT_REQ){
-      //printf("Recieving Pred\n");
+      //printf("Receiving Pred\n");
       res[0] = PREDICT_REQ;  
       branch_pred_req(res, &buff[1]);
     }else if(buff[0] == UPDATE_REQ){
-      //printf("Recieving Update\n");
+      //printf("Receiving Update\n");
       res[0] = UPDATE_REQ;
       branch_update_req(res, &buff[1]);
     }else{
-      fprintf(stderr, "Recieving invalid data");
+      fprintf(stderr, "Receiving invalid data");
     }
   }else{
     perror("Error reading data\n");
@@ -97,25 +100,10 @@ void write_to_pipe(char* buff, int num_bytes){
   }
 }
 
-void branch_pred_resp_with_debug(char taken, __uint64_t ip, __uint64_t entryNumber, __uint64_t entryValues, __uint64_t* history){
-  //printf("%d %ld %ld %ld %ld %ld\n", taken, ip, entryNumber, entryValues, history[0], history[1]);
-  char buff[PRED_RESP_WITH_DEBUG];
-  setup_pred_resp(taken, ip, buff);
-  memcpy(&buff[PRED_RESP], &entryNumber, 8);
-  memcpy(&buff[PRED_RESP]+8, &entryValues, 8);
-  // For 128 bits of history
-  memcpy(&buff[PRED_RESP]+16, history, 16);
-  write_to_pipe(buff, PRED_RESP_WITH_DEBUG);
-}
-
 void branch_pred_resp(char taken, __uint64_t ip){
   //printf("Waiting to write %ld\n", ip);
   char buff[PRED_RESP];
   setup_pred_resp(taken, ip, buff);
   write_to_pipe(buff, PRED_RESP);
   //printf("Done waiting\n");
-}
-
-void debug(){
-  printf("Debug\n");
 }

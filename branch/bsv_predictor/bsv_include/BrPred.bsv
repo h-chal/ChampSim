@@ -32,25 +32,8 @@ typedef struct {
 } DirPredResult#(type trainInfoT) deriving(Bits, Eq, FShow);
 
 interface DirPred#(type trainInfoT);
-    `ifdef DEBUG_DATA
-    method ActionValue#(DirPredResultWithDebugData#(trainInfoT)) pred;
-    `else
     method ActionValue#(DirPredResult#(trainInfoT)) pred;
-    `endif
 endinterface
-
-// Pretty Arbitrary
-typedef struct {
-    Maybe#(Bit#(64)) entryNumber;
-    Maybe#(Bit#(64)) entryValues;
-    Maybe#(Bit#(128)) history;
-} DebugData deriving(Bits, Eq, FShow);
-
-typedef struct {
-    DebugData debugData;
-    DirPredResult#(trainInfoT) predResult;
-} DirPredResultWithDebugData#(type trainInfoT) deriving(Bits, Eq, FShow);
-
 
 function Addr offsetPc(Addr pc, Integer i) = {truncateLSB(pc), pc[7:0] + (fromInteger(i)*4)};
 

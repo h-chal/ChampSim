@@ -1,8 +1,8 @@
 .csconfig/
 _configuration.mk
-branch/gold_standard/Build
-branch/gold_standard/Predictors/TourPredictor
-branch/gold_standard/Predictors/Bimodal/Model/Tage.hpp
+
+branch/bsv_predictor/Build
+#branch/bsv_predictor/bsv_src/bsv_interface.o
 
 
 **/__pycache__/

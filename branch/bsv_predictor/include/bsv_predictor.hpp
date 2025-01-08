@@ -12,19 +12,41 @@
 #include <cassert>
 #include <cstring>
 #include <queue>
-#include "gold_standard.hpp"
 #include "types.h"
 
 
 #include "ooo_cpu.h"
 #include "tracereader.h"
 
-
-#ifdef DEBUG_DATA
-#define RESP_SIZE PRED_RESP_WITH_DEBUG
-#else
 #define RESP_SIZE PRED_RESP
+
+#ifndef RUN_BLUESIM_SCRIPT
+#define RUN_BLUESIM_SCRIPT "./branch/bsv_predictor/run_bluesim.sh"
 #endif
+
+#ifndef DEBUG_PRINTS
+#define DEBUG_PRINTS 1
+#endif
+
+#define debug_printf(fmt, ...) \
+  do { if(DEBUG_PRINTS) { \
+    printf(fmt, __VA_ARGS__); \
+    }}\
+  while(0);
+
+#define assert_message(expr, fmt, ...) \
+  if(!(expr)) {\
+    printf(fmt, __VA_ARGS__); \
+    assert(expr); \
+  }
+
+class predictor_concept {
+  public:  
+      virtual ~predictor_concept() = default;
+      virtual void initialise() = 0;
+      virtual void last_branch_result(uint64_t ip, uint64_t target, uint8_t taken, uint8_t branch_type) = 0;
+      virtual uint8_t predict_branch(uint64_t ip) = 0; 
+};
 
 class bsv_predictor final : public predictor_concept{
     private:
@@ -36,14 +58,12 @@ class bsv_predictor final : public predictor_concept{
       // Debug
       u_int64_t count;
       uint64_t total_prefetched;
-      uint64_t last_recieved;
+      uint64_t last_received;
 
       void initiate_bsim();
       uint8_t read_prediction_response(uint64_t ip);
 
     public:
-
-      DebugData last_debug_entry;
       bsv_predictor() : last_prediction{}, count(0), total_prefetched(0) {}
       void initialise();
       void last_branch_result(uint64_t ip, uint64_t target, uint8_t taken, uint8_t branch_type);
@@ -82,26 +102,21 @@ void write_update(uint64_t ip, uint64_t branch_target, uint8_t taken, uint8_t br
 uint8_t bsv_predictor::read_prediction_response(uint64_t ip){
   std::array<char, RESP_SIZE> buff;
   uint8_t out = 0;
-  uint64_t recieved_ip;
+  uint64_t received_ip;
   
   if(read(resp_pipe[0], std::data(buff), RESP_SIZE) > 0){
-        memcpy(&recieved_ip, std::data(buff)+1, 8);
-        #ifdef DEBUG_DATA
-          memcpy(&last_debug_entry .entryNumber, std::data(buff)+PRED_RESP, 8);
-          memcpy(&last_debug_entry .entryValues, std::data(buff)+PRED_RESP+8, 8);
-          memcpy(&last_debug_entry .global_history, std::data(buff)+PRED_RESP+16, 16);
-        #endif
+        memcpy(&received_ip, std::data(buff)+1, 8);
 
-        if(recieved_ip == ip){
+        if(received_ip == ip){
           out = buff[0] - '0';
-          count++; last_recieved = ip;
-          debug_printf("Prediction Done %ld\n", recieved_ip);
+          count++; last_received = ip;
+          debug_printf("Prediction Done %ld\n", received_ip);
         }
         else{
-          last_prediction = {recieved_ip, buff[0]-'0'};
+          last_prediction = {received_ip, buff[0]-'0'};
         }
   }else{
-      perror("Recieving prediction");
+      perror("Receiving prediction");
   }
   return out;
 }
@@ -113,9 +128,9 @@ uint8_t bsv_predictor::predict_branch(uint64_t ip){
    if(last_prediction){
     if((*last_prediction).first == ip){
       out = (*last_prediction).second;
-      debug_printf("Prediction Recieved %ld, %d\n", ip, out);
+      debug_printf("Prediction Received %ld, %d\n", ip, out);
       last_prediction.reset();
-      count++; last_recieved = ip;
+      count++; last_received = ip;
     }
    }else{
     debug_printf("total prefetch: %ld, since prefetch: %ld\n", total_prefetched, count);
@@ -130,8 +145,8 @@ uint8_t bsv_predictor::predict_branch(uint64_t ip){
 
 void bsv_predictor::last_branch_result(uint64_t ip, uint64_t branch_target, uint8_t taken, uint8_t branch_type){
   if(branch_type == BRANCH_CONDITIONAL){
-      debug_printf("Update %ld, branch targed: %ld, taken: %d, branch type: %d, count: %ld, last_recieved: %ld \n", ip, branch_target, taken, branch_type, count, last_recieved);
-      assert(last_recieved == ip);
+      debug_printf("Update %ld, branch target: %ld, taken: %d, branch type: %d, count: %ld, last_received: %ld \n", ip, branch_target, taken, branch_type, count, last_received);
+      assert(last_received == ip);
    }
     //write_update(ip, branch_target, taken, branch_type);
   return;
@@ -150,6 +165,10 @@ void bsv_predictor::initialise(){
   champsim::enable_ahead_predictions(req_pipe[1], send, &total_prefetched);
 }
 
+/*
+Fork this process and communicate via pipes.
+One process remains in this C++ code and the other is in Bluesim (called via a script).
+*/
 void bsv_predictor::initiate_bsim(){
   pid_t pid;
   if(pipe(req_pipe) < 0) exit(1);
@@ -162,7 +181,7 @@ void bsv_predictor::initiate_bsim(){
   }
 
   if(pid == 0){
-    char run[] = SCRIPT_LOCATION;
+    char run[] = RUN_BLUESIM_SCRIPT;
     char* args[] = {run, NULL};
     char pred_in_arg[20], pred_out_arg[20];
 

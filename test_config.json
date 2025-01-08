@@ -1,8 +1,6 @@
 {
-    "gold_standard": {
-        "predictor": "Bimodal",
-        "debug": true,
-        "no_model": false
+    "bsv_predictor": {
+        "predictor": "Bimodal"
     },
     "num_cores": 1
 }
