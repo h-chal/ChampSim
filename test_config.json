@@ -1,6 +1,6 @@
 {
     "bsv_predictor": {
-        "predictor": "Bimodal"
+        "predictor": "AlwaysTaken"
     },
     "num_cores": 1
 }
