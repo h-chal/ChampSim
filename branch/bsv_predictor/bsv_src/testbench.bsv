@@ -74,13 +74,13 @@ module mkTestbench(Empty);
         while(True) seq
           action let a <- receive; message <= convertToMessage(a); endaction
           if (isPred(message)) seq
-            $display("bsv predict %d", message.PredictReq);
+            //$display("bsv predict %d", message.PredictReq);
             predictor.nextPc(pack(message.PredictReq));
             predict(message.PredictReq);
             branch_pred_resp({7'b0000000,pack(pendingTrainInfo.taken)}, message.PredictReq);
           endseq
           if (!isPred(message)) seq
-            $display("bsv update %d", message.UpdateReq.ip);
+            //$display("bsv update %d", message.UpdateReq.ip);
             update(message.UpdateReq);
           endseq
         endseq
