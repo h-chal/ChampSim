@@ -25,7 +25,7 @@
 #endif
 
 #ifndef DEBUG_PRINTS
-#define DEBUG_PRINTS 1
+#define DEBUG_PRINTS 0
 #endif
 
 #define debug_printf(fmt, ...) \
