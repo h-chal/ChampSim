@@ -44,7 +44,7 @@ BSIM_EXE = $(BUILD_DIR)/$(TOPMODULE)_bsim
 
 .PHONY: failure_check
 failure_check:
-	make all_bsim PREDICTOR=$(PREDICTOR) || make unset PREDICTOR=$(PREDICTOR)
+	make all_bsim PREDICTOR=$(PREDICTOR) || { make unset PREDICTOR=$(PREDICTOR); exit 1; } 
 
 
 .PHONY: all_bsim
