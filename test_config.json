@@ -1,6 +1,6 @@
 {
     "bsv_predictor": {
-        "predictor": "AlwaysTaken"
+        "predictor": "SaturationCounter"
     },
     "num_cores": 1
 }
