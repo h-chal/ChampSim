@@ -1,10 +1,6 @@
 .csconfig/
 _configuration.mk
 
-branch/bsv_predictor/Build
-#branch/bsv_predictor/bsv_src/bsv_interface.o
-
-
 **/__pycache__/
 *.pyc
 
@@ -15,11 +11,13 @@ bin/
 
 test/000-test-main
 
-traces/
-
 tracer/pin/obj-intel64/
 
 vcpkg_installed/
 
 **/_build
 **/_doxygen
+
+
+branch/bsv_predictor/Build
+.bsv_config.json.timestamp

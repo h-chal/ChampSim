@@ -22,3 +22,5 @@ vcpkg/vcpkg install
 - `./config.sh bsv_config.json` (selects predictor)
 - `make`
 - `bin/champsim --warmup-instructions 2000000 --simulation-instructions 5000000 ~/diss/traces/DPC-3/600.perlbench_s-210B.champsimtrace.xz`
+
+Alternatively, you can modify and use `./try_bsv_predictor.sh`.
