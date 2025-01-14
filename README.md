@@ -19,6 +19,6 @@ vcpkg/bootstrap-vcpkg.sh
 vcpkg/vcpkg install
 ```
 - Download a trace e.g. `wget -P ~/diss/traces/DPC-3 https://dpc3.compas.cs.stonybrook.edu/champsim-traces/speccpu/600.perlbench_s-210B.champsimtrace.xz`
-- `./config.sh test_config.json` (selects predictor)
+- `./config.sh bsv_config.json` (selects predictor)
 - `make`
 - `bin/champsim --warmup-instructions 2000000 --simulation-instructions 5000000 ~/diss/traces/DPC-3/600.perlbench_s-210B.champsimtrace.xz`
