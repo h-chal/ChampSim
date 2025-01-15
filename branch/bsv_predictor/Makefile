@@ -93,7 +93,7 @@ default:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)/*
-	-rm $(BSV_SRC)/bsv_interface.o
+	rm -f $(BSV_SRC)/bsv_interface.o
 
 .PHONY: full_clean
 full_clean:
