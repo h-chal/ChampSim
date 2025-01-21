@@ -44,7 +44,7 @@ BSIM_EXE = $(BUILD_DIR)/$(TOPMODULE)_bsim
 
 .PHONY: failure_check
 failure_check:
-	make all_bsim PREDICTOR=$(PREDICTOR) || make unset PREDICTOR=$(PREDICTOR)
+	make all_bsim PREDICTOR=$(PREDICTOR) || { make unset PREDICTOR=$(PREDICTOR); exit 1; } 
 
 
 .PHONY: all_bsim
@@ -93,7 +93,7 @@ default:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)/*
-	-rm $(BSV_SRC)/bsv_interface.o
+	rm -f $(BSV_SRC)/bsv_interface.o
 
 .PHONY: full_clean
 full_clean:
