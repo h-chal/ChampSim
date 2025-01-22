@@ -30,9 +30,9 @@ PL = $(BSC_DIR)/lib/Libraries/
 BSC_COMP_FLAGS = -elab -keep-fires -aggressive-conditions -no-warn-action-shadowing
 INCLUDE = $(TOPDIR)/include
 BSC_LINK_FLAGS = -keep-fires
-BSC_PATHS = -p $(BSV_SRC):$(BSV_INCLUDE):$(PRED_DIR)/$(PREDICTOR)/Bluespec:$(PL)
+BSC_PATHS = -p $(BSV_SRC):$(BSV_INCLUDE):$(PRED_DIR)/$(PREDICTOR):$(PL)
 
-TOP_BSV_PREDICTOR_FILE ?= $(TOPDIR)/$(PRED_DIR)/$(PREDICTOR)/Bluespec/$(PREDICTOR).bsv
+TOP_BSV_PREDICTOR_FILE ?= $(TOPDIR)/$(PRED_DIR)/$(PREDICTOR)/$(PREDICTOR).bsv
 DIR_PREDICTOR_INTERFACE_LOCATION ?= $(BSV_INCLUDE)/Predictor.bsv
 
 
