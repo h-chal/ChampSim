@@ -1,12 +1,10 @@
-# h-chal's fork of ChampSim
+# Fork of ChampSim
 
 This is a fork of a fork of [ChampSim](https://github.com/ChampSim/ChampSim).
 
-[KatyT12](https://github.com/KatyT12/ChampSim) forked ChampSim to allow branch predictors to be written in Bluespec SystemVerilog.
+\[Redacted for anonymity\] forked ChampSim to allow branch predictors to be written in Bluespec SystemVerilog.
 
-I have forked that work to make it work on my machine. In the future I may copy her approach to allow other ChampSim functionality to be modelled with BSV, e.g. prefetching.
-
-All of my branches start with `h-chal/`.
+I have forked that work to make it work on my machine. In the future I may copy \[their\] approach to allow other ChampSim functionality to be modelled with BSV, e.g. prefetching.
 
 The README for ChampSim can be found [here](README_champsim.md).
 
