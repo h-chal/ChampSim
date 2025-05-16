@@ -1,3 +1,6 @@
+# Modified for the purposes of an undergraduate dissertation under blind grading number 2441F.
+
+
 ROOT_DIR = $(patsubst %/,%,$(dir $(abspath $(firstword $(MAKEFILE_LIST)))))
 
 CPPFLAGS += -MMD -I$(ROOT_DIR)/inc

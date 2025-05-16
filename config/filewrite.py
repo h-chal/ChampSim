@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Modified for the purposes of an undergraduate dissertation under blind grading number 2441F.
+
 import difflib
 import hashlib
 import itertools

@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Modified for the purposes of an undergraduate dissertation under blind grading number 2441F.
+
+
 #include "tracereader.h"
 
 #include <fstream>
